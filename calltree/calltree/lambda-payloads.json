@@ -1,5 +1,8 @@
 {
     "": {
         "lambda": {}
+    },
+    "calltree": {
+        "lambda": {}
     }
 }

@@ -1,12 +1,17 @@
-const request = require('request-promise-native')
+require("./environment.js");
+const request = require('request-promise-native');
 
 exports.handler = (event, context, callback) => {
-    const TWILIO_ACCOUNT = 'AC1967a49711d26a2b8ad344946cb3d591' // add here your Twilio account ID
-    const TWILIO_API_KEY = 'a8faf6d02d198b7067283a53618ed85a' // add here your Twilio API key
-    const SEND_SMS_FROM = '+14702802715' // add here your Twilio phone number
-    const SEND_SMS_TO = '+19178873590' // add here your Twilio phone number
+    const TWILIO_ACCOUNT = process.env.TWILIO_ACCOUNT_SID;
+    const TWILIO_API_KEY = process.env.TWILIO_AUTH_TOKEN;
+    const SEND_SMS_FROM = process.env.MY_PHONE_NUMBER;
+    const SEND_SMS_TO = '+19178873590';
+    
 
-
+    // get access to the data 
+    // if time of event, figure out match of the month
+    // text match of the month with quote
+    
     return request.post({
             url: `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT}/Messages.json`,
             json: true,
