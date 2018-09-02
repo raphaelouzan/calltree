@@ -27,12 +27,14 @@ function testSendBirthdayMessage() {
   // Send to Raphael random birthdays of people
   var birthdays = []; 
   var usernames = Object.keys(people);
+  var numberOfBirthdays = Math.floor(Math.random()* 100 % 10); 
   
-  for (var i = 0; i < Math.max(1, Math.random()* 100 % 10); i++) { 
-    birthdays.push(people[usernames[Math.random() * 100 % usernames.length]]);
+  for (var i = 0; i < Math.max(1, numberOfBirthdays); i++) { 
+    // Get random people
+    birthdays.push(people[usernames[Math.floor(Math.random() * 100) % usernames.length]]);
   }
   
-  Logger.log(Math.random()*100 % usernames.length + " " + testRec + " " + usernames[4] + " " + birthdays);
+  Logger.log(birthdays);
   
   sendBatchSms([testRec], formatBirthdayMessage(birthdays));
 }
@@ -47,8 +49,12 @@ function formatBirthdayMessage(birthdays) {
     msg += "one birthday: " + birthdays[0].firstname + " " + birthdays[0].lastname + " is celebrating!"; 
   } else { 
     msg += birthdays.length + " birthdays:";
-    // TODO loop 
+    for (var i in birthdays) { 
+      msg += "\n" + birthdays[i].firstname + " " + birthdays[i].lastname + " (" + birthdays[i].city + ", " + birthdays[i].country + ") ";
+    }
   }
+  
+  return msg; 
 }
 
 function getBirthdayPeopleForDate(people, day, month) { 
