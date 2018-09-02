@@ -35,14 +35,6 @@ function exportSheetAsJSON(sheetId) {
  * For more information on using the Spreadsheet API, see
  * https://developers.google.com/apps-script/service_spreadsheet
  */
-function onOpen() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet();
-  var entries = [{
-    name : "Do it",
-    functionName : "exportJSON"
-  }];
-  sheet.addMenu("Export JSON", entries);
-};
 
 // triggers parsing and displays results in a text area inside a custom modal window
 function exportJSON() {
