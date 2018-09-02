@@ -1,5 +1,5 @@
 function runEveryDay() { 
-  // TODO schedule this to run every day 
+  // TODO Test sending SMS messages to multiple people
   // TODO Templatize SMS messages with replacable variables. 
   // TODO prettify the copy for birthday message and match messages
   // TODO Add Stackdriver logging, measure time to run
@@ -17,8 +17,21 @@ function runEveryDay() {
   sendMatchesIfScheduledForToday(peopleDb);
 }
 
+function onOpen() {
+   
+   var menu = SpreadsheetApp.getUi()
+      .createMenu('Call Tree Functions')
+      .addItem('Verify Phone Numbers', 'lookupPhoneNumbers')
+      .addItem('Update control panel', 'populateControlPanel')
+      .addItem('Export sheet to JSON', 'exportJSON')
+      .addSeparator()
+      .addItem('* Run CallTree batch * (' + (isDebugOn() ? 'DEBUG' : 'PRODUCTION') + ')', 'runEveryDay')
+      .addToUi(); 
+};
+
 function loadMembers() { 
   // Could cache JSON structure for faster processing
+  // TODO should be converted directly into objects rather than parsing JSON 
   return JSON.parse(exportSheetAsJSON(1)); 
 }
 
