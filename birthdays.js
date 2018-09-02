@@ -27,17 +27,13 @@ function formatPerson(person) {
 function formatBirthdayMessage(birthdays) { 
   assert(birthdays.length > 0, "formatBirthdayMessage called with empty birthday list"); 
   
-  var msg = "Hi, this is the Henry Crown CallTree! "; 
-  msg += "Today, we're celebrating "; 
-  if (birthdays.length == 1) { 
-    msg += "the birthday of: " + formatPerson(birthdays[0]); 
-  } else { 
-    msg += birthdays.length + " birthdays today:";
-    for (var i in birthdays) { 
-      msg += "\n" + formatPerson(birthdays[i]);
-    }
+  
+  var birthdayPeople = ""; 
+  for (var i in birthdays) { 
+      birthdayPeople += "\n" + formatPerson(birthdays[i]);
   }
   
+  var msg = textFromTemplate(getBirthdayTemplate(), {"peopleWithBirthday": birthdayPeople});
   return msg; 
 }
 
