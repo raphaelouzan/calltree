@@ -1,31 +1,3 @@
-
-function exportSheetAsJSON(sheetId) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[sheetId]
-  var rows = sheet.getDataRange();
-  var numRows = rows.getNumRows();
-  var numCols = rows.getNumColumns();
-  var values = rows.getValues();
-  
-  var output = "";
-  output += "{\n";
-  var header = values[0];
-  for (var i = 1; i < numRows; i++) {
-    if (i > 1) output += " , \n";
-    var row = values[i];
-    output += "\""+row[0]+"\" : {";
-    for (var a = 1;a<numCols;a++){
-      if (a > 1) output += " , ";
-         output += "\""+header[a]+"\" : \""+row[a]+"\"";
-    }
-    output += "}";
-    //Logger.log(row);
-  }
-  output += "\n}";
-  
-  return output; 
-  
-}
-
 /**
  * From: https://gist.github.com/daaain/3932602
  * Adds a custom menu to the active spreadsheet, containing a single menu item

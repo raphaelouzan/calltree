@@ -30,9 +30,8 @@ function onOpen() {
 };
 
 function loadMembers() { 
-  // Could cache JSON structure for faster processing
-  // TODO should be converted directly into objects rather than parsing JSON 
-  return JSON.parse(exportSheetAsJSON(1)); 
+  var peopleTable = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("People"); 
+  return getRowsData(peopleTable, peopleTable.getDataRange(), 1);;
 }
 
 function sendMatchesIfScheduledForToday(peopleDb) { 
