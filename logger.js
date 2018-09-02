@@ -46,12 +46,12 @@ function populateControlPanel(people) {
   // This month submission date
   var month = String(new Date().getMonth() + 1); 
   var year = String(new Date().getFullYear());
-  sheet.getRange(3, 1).setValue(getSubmissionInfoForMonth(month, year)[0]);
+  sheet.getRange(3, 1).setValue(getSubmissionInfoForMonth(month, year)[0] + "/" + month);
   // Next submission date (iterate by a month)
   var nextMonth = new Date(); 
   nextMonth.setMonth(nextMonth.getMonth() + 1);
   Logger.log("Next month: " + String(nextMonth)); 
-  sheet.getRange(4, 1).setValue(getSubmissionInfoForMonth(String(nextMonth.getMonth() + 1), String(nextMonth.getFullYear()))[0]); 
+  sheet.getRange(4, 1).setValue(getSubmissionInfoForMonth(String(nextMonth.getMonth() + 1), String(nextMonth.getFullYear()))[0] + "/" + (nextMonth.getMonth() + 1)); 
   // Birthdays today 
   sheet.getRange(5, 1).setValue(getBirthdayPeopleForDate(people, new Date().getDate(), new Date().getMonth()));
   // Number of members
