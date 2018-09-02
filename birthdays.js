@@ -47,7 +47,7 @@ function getBirthdayPeopleForDate(people, day, month) {
     if (person.birthday) {
       birthday = new Date(person.birthday); 
       Logger.log(person.firstname + " birthday -> " + birthday); 
-      if (birthday.getMonth() == month && birthday.getDate() == day) { 
+      if (birthday && birthday.getMonth() == month && birthday.getDate() == day) { 
         birthdayPeople.push(person);
       } else { 
         notYetPeople.push(person); 

@@ -53,9 +53,10 @@ function populateControlPanel(people) {
   Logger.log("Next month: " + String(nextMonth)); 
   sheet.getRange(4, 1).setValue(getSubmissionInfoForMonth(String(nextMonth.getMonth() + 1), String(nextMonth.getFullYear()))[0] + "/" + (nextMonth.getMonth() + 1)); 
   // Birthdays today 
-  sheet.getRange(5, 1).setValue(getBirthdayPeopleForDate(people, new Date().getDate(), new Date().getMonth()));
+  var birthdays = getBirthdayPeopleForDate(people, new Date().getDate(), new Date().getMonth());
+  sheet.getRange(5, 1).setValue(birthdays[0].length);
   // Number of members
-  sheet.getRange(6, 1).setValue(Object.keys(people).length);
+  sheet.getRange(6, 1).setValue(Object.keys(people).length + 1);
   // Oldest and latest matches sent
   var matches = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Timetable");
   var lastSent = matches.getRange(6, 2, matches.getLastRow()).getValues();
