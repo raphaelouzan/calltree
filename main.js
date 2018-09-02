@@ -1,4 +1,5 @@
 function runEveryDay() { 
+  // TODO Add test for getRowsData (I think it includes the keys as a row)
   // TODO Birthday message bulk sending (SMS messages to multiple people)
   // TODO Templatize birthday SMS message. 
   // TODO Add Stackdriver logging, measure time to run
@@ -30,7 +31,9 @@ function onOpen() {
 
 function loadMembers() { 
   var peopleTable = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("People"); 
-  return getRowsData(peopleTable, peopleTable.getDataRange(), 1);;
+  var people =  getRowsData(peopleTable);
+  Logger.log(people);
+  return people;
 }
 
 function sendMatchesIfScheduledForToday(peopleDb) { 
