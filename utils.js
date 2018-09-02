@@ -135,6 +135,15 @@ function normalizeHeader_(header) {
   return key;
 }
 
+/*
+ * @param cellData (String)
+ * @returns the value otherwise null if an empty string
+ */ 
+function nullIfEmpty(cellData) { 
+  if (isCellEmpty_(cellData)) return null; 
+  else return cellData;
+}
+
 // Returns true if the cell where cellData was read from is empty.
 // Arguments:
 //   - cellData: string

@@ -1,5 +1,6 @@
 function logError(errorMsg) { 
   logRow(new Date(), "", "", "", "", errorMsg);
+  console.error("Error : " + errorMsg);
 }
 
 function logSms(from, to, body) { 
@@ -8,6 +9,7 @@ function logSms(from, to, body) {
 
 function logSmsError(from, to, body, errorMsg) { 
   logRow(new Date().toString(), from, to, body, "error", errorMsg);
+  console.error("Error sending msg %s %s %s %s", from, to, body, errorMsg);
 }
 
 function logRowTest() { 
