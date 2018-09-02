@@ -2,6 +2,7 @@ function runEveryDay() {
   // TODO schedule this to run every day 
   // TODO Templatize SMS messages with replacable variables. 
   // TODO prettify the copy for birthday message and match messages
+  // TODO Add Stackdriver logging, measure time to run
 
   Logger.log("Running CallTree daily job. MODE: Debug? " + isDebugOn()); 
   
@@ -102,12 +103,15 @@ function lookupAndSendMatches(people, quote) {
   }
 }
 
+function formatPerson(person) { 
+  return person.firstname + " " + person.lastname + " (" + person.city + ", " + person.country + ") at \n📱: " + person.number + "\n📧: " + person.email; ;
+}
 
 function formatMatchMessage(to, match, quote) { 
  
   var msg = "Hello " + to.firstname + ", this is the keep in touch Henry Crown Call Tree!" + 
     "\nThis month, may I suggest you contact " + 
-    match.firstname + " " + match.lastname + " (" + match.city + ") at \n📱: " + match.number + " \n📧: " + match.email + "?" + 
+      formatPerson(match) + "?" + 
     "\n\n" + 
     quote;
     

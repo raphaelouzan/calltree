@@ -1,4 +1,3 @@
-
 /*
  * @todo should mark in the table who was already sent for to avoid dups and send late 
  * birthday notices if the script didn't run on time. 
@@ -20,37 +19,18 @@ function sendBirthdays(people) {
   }
 }
 
-function testSendBirthdayMessage() { 
-  var people = loadMembers(); 
-  var testRec = people["Raphael"].number; 
-  
-  // Send to Raphael random birthdays of people
-  var birthdays = []; 
-  var usernames = Object.keys(people);
-  var numberOfBirthdays = Math.floor(Math.random()* 100 % 10); 
-  
-  for (var i = 0; i < Math.max(1, numberOfBirthdays); i++) { 
-    // Get random people
-    birthdays.push(people[usernames[Math.floor(Math.random() * 100) % usernames.length]]);
-  }
-  
-  Logger.log(birthdays);
-  
-  sendBatchSms([testRec], formatBirthdayMessage(birthdays));
-}
-
 // TODO improve birthday message (emoji, etc.)
 function formatBirthdayMessage(birthdays) { 
   assert(birthdays.length > 0, "formatBirthdayMessage called with empty birthday list"); 
   
   var msg = "Hi, this is the Henry Crown CallTree! "; 
-  msg += "Today, we have "; 
+  msg += "Today, we're celebrating "; 
   if (birthdays.length == 1) { 
-    msg += "one birthday: " + birthdays[0].firstname + " " + birthdays[0].lastname + " is celebrating!"; 
+    msg += "the birthday of: " + formatPerson(birthdays[0]); 
   } else { 
-    msg += birthdays.length + " birthdays:";
+    msg += birthdays.length + " birthdays today:";
     for (var i in birthdays) { 
-      msg += "\n" + birthdays[i].firstname + " " + birthdays[i].lastname + " (" + birthdays[i].city + ", " + birthdays[i].country + ") ";
+      msg += "\n" + formatPerson(birthdays[i]);
     }
   }
   
