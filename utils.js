@@ -1,3 +1,37 @@
+function textFromTemplate(template, data) { 
+  var templateVars = template.match(/\$\{\"[^\"]+\"\}/g);
+  Logger.log(template + " ==>" + templateVars); 
+  if (!assert(templateVars, "Couldn't extract variables from template")) return null;
+  
+  // Replace variables from the template with the actual values from the data object.
+  // If no value is available, replace with the empty string.
+  for (var i = 0; i < templateVars.length; ++i) {
+    var marker = templateVars[i].replace("${\"", "").replace("\"}", "");
+    Logger.log("===== Template var : " + marker); 
+ 
+    var isDict = (marker.indexOf(".") != -1);
+    var value; 
+    
+    if (isDict) { 
+      var objName = marker.substring(0, marker.indexOf("."));
+      Logger.log("Person referenced -> " + objName); 
+      var obj = data[objName];
+      if (!assert(obj, "The template variable " + marker + " is invalid")) continue;
+      Logger.log("Person obj -> " + obj);
+      var field = marker.substring(marker.indexOf(".") + 1, marker.length);
+      Logger.log("Template field -> " + field);
+      value = obj[field];
+    } else { 
+      value = data[marker];
+    }
+   
+    Logger.log("Data -> " + value);
+    template = template.replace(templateVars[i], value || "");
+  }
+  
+  return template;
+}
+
 // @return A dict where the key is the first datafield of each row, 
 //         and the value is a dict where the key is form keys param for the values of each row
 // @note   All the data values are converted to String
@@ -43,36 +77,6 @@ function getRowsData(sheet, range, columnHeadersRowIndex) {
   var headers = headersRange.getValues()[0];
   return getObjects(range.getValues(), headers);
 }
-
-
-/**
- * Replaces markers in a template string with values in a row.
- *
- * @param  {String} template the template to be used
- * @param  {Array} rowValues the values to fill the template
- * @param  {Array} headers the headers corresponding to the values
- * @return {String} the copy of the template
- */
-function createTextFromTemplate(template, rowValues, headers, dateFormat, dateTimeZone) {
-  for(i in rowValues) {
-    if(rowValues[i] instanceof Date && !isNaN(rowValues[i].valueOf())) {
-      rowValues[i] = Utilities.formatDate(new Date(rowValues[i]), dateTimeZone, dateFormat);
-    }
-  }
-  var data =  getObjects_([rowValues], normalizeHeaders_(headers))[0];
-  // Search for all the variables to be replaced, for instance ${"Column name"}
-  var templateVars = template.match(/\$\{\"[^\"]+\"\}/g);
-
-  // Replace variables from the template with the actual values from the data object.
-  // If no value is available, replace with the empty string.
-  for (var i = 0; i < templateVars.length; ++i) {
-    // normalizeHeader_ ignores ${"} so we can call it directly here.
-    var variableData = data[normalizeHeader_(templateVars[i])];
-    template = template.replace(templateVars[i], variableData || "");
-  }
-  return template;
-}
-
 
 
 // Returns an Array of normalized Strings.

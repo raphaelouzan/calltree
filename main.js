@@ -1,7 +1,6 @@
 function runEveryDay() { 
-  // TODO Test sending SMS messages to multiple people
-  // TODO Templatize SMS messages with replacable variables. 
-  // TODO prettify the copy for birthday message and match messages
+  // TODO Birthday message bulk sending (SMS messages to multiple people)
+  // TODO Templatize birthday SMS message. 
   // TODO Add Stackdriver logging, measure time to run
 
   Logger.log("Running CallTree daily job. MODE: Debug? " + isDebugOn()); 
@@ -115,24 +114,10 @@ function lookupAndSendMatches(people, quote) {
   }
 }
 
-function formatPerson(person) { 
-  return person.firstname + " " + person.lastname + " (" + person.city + ", " + person.country + ") at \n📱: " + person.number + "\n📧: " + person.email; ;
-}
-
-function formatMatchMessage(to, match, quote) { 
- 
-  var msg = "Hello " + to.firstname + ", this is the keep in touch Henry Crown Call Tree!" + 
-    "\nThis month, may I suggest you contact " + 
-      formatPerson(match) + "?" + 
-    "\n\n" + 
-    quote;
-    
-  return msg;
-}
-
 function sendMatchText(to, match, quote) { 
   Logger.log("Sending to " + to.firstname + " match with " + match.firstname);
-  var msg = formatMatchMessage(to, match, quote);
+  
+  var msg = textFromTemplate(getMatchTemplate(), {"to" : to, "person" : match, "quote": quote});
   
   assert(sendSms(to.number, msg), "Message could not be sent");
 }

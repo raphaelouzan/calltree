@@ -19,6 +19,10 @@ function sendBirthdays(people) {
   }
 }
 
+function formatPerson(person) { 
+  return person.firstname + " " + person.lastname + " (" + person.city + ", " + person.country + ") at \n📱: " + person.number + "\n📧: " + person.email; ;
+}
+
 // TODO improve birthday message (emoji, etc.)
 function formatBirthdayMessage(birthdays) { 
   assert(birthdays.length > 0, "formatBirthdayMessage called with empty birthday list"); 

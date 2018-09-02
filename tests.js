@@ -1,11 +1,31 @@
 function getRandomPerson(people) { 
   var usernames = Object.keys(people);
-  return people[usernames[rand(0, usernames.length)]];
+  return people[usernames[rand(1, usernames.length - 1)]];
 }
 
 
 function rand(min, max) { 
   return Math.floor(Math.random() * 100 % max) + min;
+}
+
+function runAutoTests() { 
+  var res = testMatchTemplate(); 
+  return res;
+}
+
+function testMatchTemplate() { 
+  var people = loadMembers();
+  var tp = "Hello ${\"to.firstname\"} meet ${\"match.lastname\"}";
+  var res = textFromTemplate(tp, {"to" : people["Raphael"], "match" : people["Athena"]}); 
+  Logger.log(res); 
+  if (res != "Hello Raphael meet Karp") throw "Failed test"; 
+  
+  tp = "Hello ${\"to.firstname\"} World ${\"bla\"}";
+  res = textFromTemplate(tp, {"to" : people["Raphael"], "bla" : "Sensei"});
+  Logger.log(res);
+  if(res != "Hello Raphael World Sensei") throw "failed test";
+  
+  return res;
 }
 
 function testSendBirthday() { 
@@ -31,7 +51,6 @@ function testSendBirthday() {
 }
 
 function testSendBirthdayMessageUI() { 
-  if (!isDebugOn()) return Logger.log("Need to run in debug mode"); 
   
   var people = loadMembers(); 
   var testRec = people["Raphael"].number; 
@@ -53,7 +72,7 @@ function testSendBirthdayMessageUI() {
 
 
 function testSendMatch() { 
-  if (!isDebugOn()) return Logger.log("Need to run in debug mode"); 
+
   var people = loadMembers(); 
   var testRec = people["Raphael"]; 
   sendMatchText(testRec, getRandomPerson(people), 
