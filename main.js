@@ -1,7 +1,7 @@
 function runEveryDay() { 
   // TODO Add test for getRowsData, sendMatches
-  // TODO Birthday message bulk sending (SMS messages to multiple people)
-  // TODO Add monthly digest 
+  // TODO Test birthday message bulk sending (SMS messages to multiple people)
+  // TODO Add monthly news digest 
 
   Logger.log("Running CallTree daily job. MODE: Debug? " + isDebugOn()); 
   
@@ -12,7 +12,7 @@ function runEveryDay() {
     console.timeEnd("loadMembers");
     
     console.time("populateControlPanel");
-    populateControlPanel(peopleDb);
+    populateControlPanel(people);
     console.timeEnd("populateControlPanel");
   
     // TODO test send birthdays
