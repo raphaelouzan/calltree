@@ -1,9 +1,13 @@
-function getBase64Auth() {
-  return Utilities.base64Encode(TWILIO_ACCOUNT_SID + ":" + TWILIO_AUTH_TOKEN);
+function getBase64Auth(forceProduction) {
+  if (forceProduction) { 
+    return Utilities.base64Encode(TWILIO_PRODUCTION_SID + ":" + TWILIO_PROUDCTION_AUTH);
+  } else { 
+    return Utilities.base64Encode(TWILIO_ACCOUNT_SID + ":" + TWILIO_AUTH_TOKEN);
+  }
 }
 
 function sendBatchSms(to, body) { 
-  Logger.log("Not fully implemented TODO"); 
+  Logger.log("!!! sendBatchSms() - Not fully implemented TODO"); 
   for (var i in to) { 
     sendSms(to[i], body);
   }
