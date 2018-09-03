@@ -67,6 +67,7 @@ function populateControlPanel(people) {
     if (d.valueOf() < min.valueOf()) min = d; 
     else if (d.valueOf() > max.valueOf()) max = d; 
   }
+  if (max.valueOf() < min.valueOf()) max = min; 
   sheet.getRange(7, 1).setValue(min); 
   sheet.getRange(8, 1).setValue(max); 
 }
