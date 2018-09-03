@@ -6,13 +6,14 @@ function lookup(phoneNumber) {
     };
 
     options.headers = {    
-        "Authorization" : "Basic " + getBase64Auth() 
+        "Authorization" : "Basic " + getBase64Auth(true) 
     };
 
     var response = UrlFetchApp.fetch(lookupUrl, options);
     var data = JSON.parse(response); 
     Logger.log(data); 
     return data; 
+
 }
 
 function lookupPhoneNumbers() {
@@ -35,10 +36,12 @@ function lookupPhoneNumbers() {
             try { 
                 data = lookup(phoneNumber);
                 if (data['status'] == 404) { 
-                    sheet.getRange(spreadsheetRow, STATUS_CELL).setValue("not found");
+                  sheet.getRange(spreadsheetRow, STATUS_CELL).setValue("not found");
                 } else {
-                    sheet.getRange(spreadsheetRow, STATUS_CELL).setValue("found");
-                    sheet.getRange(spreadsheetRow, CARRIER_CELL).setValue(data['carrier']['name']);
+                  sheet.getRange(spreadsheetRow, STATUS_CELL).setValue("found");
+                  sheet.getRange(spreadsheetRow, CARRIER_CELL).setValue(data['carrier']['name']);
+                  // update phone number to best format
+                  sheet.getRange(spreadsheetRow, NUMBER_CELL).setValue(data['phone_number']);
                 }  
             } catch(err) {
                 Logger.log(err);
