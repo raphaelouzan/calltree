@@ -28,6 +28,14 @@ function testMatchTemplate() {
   return res;
 }
 
+function testSubInfo() { 
+  // TODO need to improve this test
+	var people = loadMembers();
+	var r = getSubmissionInfoForMonth(people, "8", "2018");
+	Logger.log("timing " + r.dayToSend + " matches " + r.matches + " quote " + r.quote);
+
+}
+
 function testSendBirthday() { 
   // Generate random dates with today's date
   // Check if it can find today's date within the random dates
