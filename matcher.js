@@ -1,8 +1,10 @@
 function sendMatchesIfScheduledForToday(people) { 
                      
-  var submissionInfo = getSubmissionInfoForMonth(new Date());
+  var today = new Date(); 
   
-  var shouldSendNow = (submissionInfo.dayToSend == String(new Date().getDate()));
+  var submissionInfo = getSubmissionInfoForMonth(today);
+  
+  var shouldSendNow = (submissionInfo.dayToSend == String(today.getDate()));
   if (shouldSendNow) { 
     assert(submissionInfo.quote != undefined, "No quote provided for this month!");
     assert(submissionInfo.matches != undefined, "No matches found for this submission!");
@@ -10,7 +12,7 @@ function sendMatchesIfScheduledForToday(people) {
     logAboutToSubmitMatches();
     sendMatches(people, submissionInfo.matches, submissionInfo.quote);
   } else { 
-    Logger.log("Not sending matches today. Submission day: " + submissionInfo.dayToSend); 
+    Logger.log("Not sending matches today. Submission day: " + submissionInfo.dayToSend + " today: " + today.getDate()); 
   }
 		
 }
@@ -70,7 +72,7 @@ function getSubmissionInfoForMonth(date) {
   var foundMatches = [];
   for (var i = MATCH_ROW - 1; i < rows.length; i++) { 
   	var row = rows[i]; 
-  	foundMatches.push([row[TO_CELL - 1], row[monthCol], sheet.getRange(i + 1, monthCol), sheet.getRange(i + 1, LAST_TEXT_CELL)]);
+  	foundMatches.push([row[TO_CELL - 1], row[monthCol], sheet.getRange(i + 1, monthCol + 1), sheet.getRange(i + 1, LAST_TEXT_CELL)]);
   }
 
   var res = { 
@@ -144,7 +146,7 @@ function generateMatches() {
   users.splice(users.indexOf("Raphael"), 1);
   
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-  var recipients = sheet.getRange(startRow, 1, sheet.getLastRow() - startRow).getValues();
+  var recipients = sheet.getRange(startRow, 1, sheet.getLastRow() + 1 - startRow).getValues();
   
   for (var i = 0; i < recipients.length; i++) { 
     
