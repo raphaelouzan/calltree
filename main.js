@@ -1,6 +1,5 @@
 function runEveryDay() { 
-  // TODO Add test for getRowsData, getSubmissionInfo, sendMatches
-  // TODO Should add a note next to matches that were sent and prevent double sending
+  // TODO Add test for getRowsData, sendMatches
   // TODO Birthday message bulk sending (SMS messages to multiple people)
   // TODO Add monthly digest 
 
@@ -10,25 +9,25 @@ function runEveryDay() {
   console.time("runEveryday");
   try { 
     console.time("loadMembers");
-    var peopleDb = loadMembers();
+    var people = loadMembers();
     console.timeEnd("loadMembers");
     
 //    console.time("populateControlPanel");
 //    populateControlPanel(peopleDb);
 //    console.timeEnd("populateControlPanel");
   
-    // TODO send birthdays
+    // TODO test send birthdays
     console.time("sendBirthdays"); 
-    sendBirthdays(peopleDb);
+    sendBirthdays(people);
     console.timeEnd("sendBirthdays");
     
     // Send matches every month on the day / month / year listed in the table
     console.time("sendMatchesIfScheduledForToday");
-    sendMatchesIfScheduledForToday(peopleDb);
+    sendMatchesIfScheduledForToday(people);
     console.timeEnd("sendMatchesIfScheduledForToday");
     
   } catch(e) { 
-    Log.log("runEveryday error " + e);
+    Logger.log("runEveryday error " + e);
     console.error('CallTree::runEveryDay() yieled an error ' + e);
   }
   console.timeEnd("runEveryday");  
@@ -49,7 +48,6 @@ function onOpen() {
 
 function loadMembers() { 
   var peopleTable = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("People"); 
-  var people =  getRowsData(peopleTable);
-  return people;
+  return getRowsData(peopleTable);
 }
 

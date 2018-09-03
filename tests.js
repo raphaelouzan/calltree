@@ -10,7 +10,37 @@ function rand(min, max) {
 
 function runAutoTests() { 
   var res = testMatchTemplate(); 
+  res = testGetSubmissionInfo(); 
+  res = testFindSubmissionColumn();
   return res;
+}
+
+function testGetSubmissionInfo() { 
+  var people = loadMembers();
+  
+  var date = new Date(2018, 7, 31); 
+  Logger.log("Date for test " + date); 
+  var res = getSubmissionInfoForMonth(date);
+  var success = (res.dayToSend == 31) && (res.matches.length == Object.keys(people).length) && res.quote != ""; 
+  if (!success) throw "Test Error : " + res;
+  
+  date = new Date(2018, rand(0, 11), rand(0, 30));
+  res = getSubmissionInfoForMonth(date);
+  success = (res.matches.length == Object.keys(people).length);
+  if (!success) throw "Test Error : " + res;
+  
+  return true; 
+}
+
+function testFindSubmissionColumn() { 
+  var date = new Date(2018, 7, 31); 
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var rows = sheet.getRange(1, 1, sheet.getLastRow(), sheet.getLastColumn()).getValues();
+  var res = findSubmissionColumn(date, rows); 
+  var success = (res == 2);
+  if (!success) throw "Test Error : " + res;
+  
+  return true;
 }
 
 function testMatchTemplate() { 
