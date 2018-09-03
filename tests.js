@@ -3,7 +3,6 @@ function getRandomPerson(people) {
   return people[usernames[rand(1, usernames.length - 1)]];
 }
 
-
 function rand(min, max) { 
   return Math.floor(Math.random() * 100 % max) + min;
 }
@@ -58,14 +57,6 @@ function testMatchTemplate() {
   return res;
 }
 
-function testSubInfo() { 
-  // TODO need to improve this test
-	var people = loadMembers();
-	var r = getSubmissionInfoForMonth(people, "8", "2018");
-	Logger.log("timing " + r.dayToSend + " matches " + r.matches + " quote " + r.quote);
-
-}
-
 function testSendBirthday() { 
   // Generate random dates with today's date
   // Check if it can find today's date within the random dates
@@ -82,9 +73,6 @@ function testSendBirthday() {
     if (person.birthday.getDate() == today.getDate() && person.birthday.getMonth() == today.getMonth()) { 
       numBirthdayPeople += 1; 
     }
-  }
-  
-  for (var i = 0; i < rand(10, 50); i++) { 
   }
 }
 
