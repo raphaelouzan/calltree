@@ -1,31 +1,24 @@
 function textFromTemplate(template, data) { 
   var templateVars = template.match(/\$\{\"[^\"]+\"\}/g);
-  Logger.log(template + " ==>" + templateVars); 
   if (!assert(templateVars, "Couldn't extract variables from template")) return null;
   
   // Replace variables from the template with the actual values from the data object.
   // If no value is available, replace with the empty string.
   for (var i = 0; i < templateVars.length; ++i) {
     var marker = templateVars[i].replace("${\"", "").replace("\"}", "");
-    Logger.log("===== Template var : " + marker); 
  
     var isDict = (marker.indexOf(".") != -1);
     var value; 
     
     if (isDict) { 
       var objName = marker.substring(0, marker.indexOf("."));
-      Logger.log("Person referenced -> " + objName); 
       var obj = data[objName];
       if (!assert(obj, "The template variable " + marker + " is invalid")) continue;
-      Logger.log("Person obj -> " + obj);
       var field = marker.substring(marker.indexOf(".") + 1, marker.length);
-      Logger.log("Template field -> " + field);
       value = obj[field];
     } else { 
       value = data[marker];
     }
-   
-    Logger.log("Data -> " + value);
     template = template.replace(templateVars[i], value || "");
   }
   
