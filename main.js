@@ -3,7 +3,6 @@ function runEveryDay() {
   // TODO Birthday message bulk sending (SMS messages to multiple people)
   // TODO Add monthly digest 
 
-
   Logger.log("Running CallTree daily job. MODE: Debug? " + isDebugOn()); 
   
   console.time("runEveryday");
@@ -12,9 +11,9 @@ function runEveryDay() {
     var people = loadMembers();
     console.timeEnd("loadMembers");
     
-//    console.time("populateControlPanel");
-//    populateControlPanel(peopleDb);
-//    console.timeEnd("populateControlPanel");
+    console.time("populateControlPanel");
+    populateControlPanel(peopleDb);
+    console.timeEnd("populateControlPanel");
   
     // TODO test send birthdays
     console.time("sendBirthdays"); 
@@ -37,7 +36,7 @@ function runEveryDay() {
 function onOpen() {
    
    var menu = SpreadsheetApp.getUi()
-      .createMenu('Call Tree Functions')
+      .createMenu('* Call Tree Functions * ')
       .addItem('Verify Phone Numbers', 'lookupPhoneNumbers')
       .addItem('Update control panel', 'populateControlPanel')
       .addItem('Export sheet to JSON', 'exportJSON')
