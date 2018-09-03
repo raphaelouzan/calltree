@@ -127,7 +127,7 @@ function sendMatchText(to, match, quote) {
 /// Match generation
 
 function _findUserByName(users, name) { 
-  if (name == "Raphael") return -1; 
+
   for (var i = 0; i < users.length; i++) {
     if (users[i] == name) return i;
   }
@@ -141,6 +141,7 @@ function generateMatches() {
   var firstMatchCol = 3;
   
   var users = Object.keys(loadMembers()); 
+  users.splice(users.indexOf("Raphael"), 1);
   
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   var recipients = sheet.getRange(startRow, 1, sheet.getLastRow() - startRow).getValues();
@@ -156,6 +157,7 @@ function generateMatches() {
       var cursor = indexOf;
       for (var x = 0; x < users.length; x++) {
         cursor = (cursor + 1) % users.length;
+        // Don't match with yourself
         if (cursor == indexOf) cursor = (cursor + 1) % users.length;
         sheet.getRange(startRow + i, firstMatchCol + x).setValue(users[cursor]);  
       }
