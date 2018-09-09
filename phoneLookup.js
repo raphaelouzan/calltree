@@ -1,21 +1,3 @@
-function lookup(phoneNumber) {
-    var lookupUrl = "https://lookups.twilio.com/v1/PhoneNumbers/" + phoneNumber + "?Type=carrier"; 
-
-    var options = {
-        "method" : "get"
-    };
-
-    options.headers = {    
-        "Authorization" : "Basic " + getBase64Auth(true) 
-    };
-
-    var response = UrlFetchApp.fetch(lookupUrl, options);
-    var data = JSON.parse(response); 
-    Logger.log(data); 
-    return data; 
-
-}
-
 function lookupPhoneNumbers() {
     var STATUS_CELL = 10; 
     var NUMBER_CELL = 9; 
@@ -49,8 +31,4 @@ function lookupPhoneNumbers() {
             }
         }
     }
-}
-
-function myFunction() {
-    lookupAll(); 
 }

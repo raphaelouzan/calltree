@@ -13,6 +13,7 @@ function sendBatchSms(to, body) {
   }
 }
 
+// Send SMS using twilio 
 function sendSms(to, body) {
   
   var messages_url = "https://api.twilio.com/2010-04-01/Accounts/" + TWILIO_ACCOUNT_SID + "/Messages.json";
@@ -44,4 +45,23 @@ function sendSms(to, body) {
   
   return res;  
   
+}
+
+// Look up phone number using Twilio service
+// @returns Twilio data about the phone number
+function lookup(phoneNumber) {
+    var lookupUrl = "https://lookups.twilio.com/v1/PhoneNumbers/" + phoneNumber + "?Type=carrier"; 
+
+    var options = {
+        "method" : "get"
+    };
+
+    options.headers = {    
+        "Authorization" : "Basic " + getBase64Auth(true) 
+    };
+
+    var response = UrlFetchApp.fetch(lookupUrl, options);
+    var data = JSON.parse(response); 
+    Logger.log(data); 
+    return data; 
 }
