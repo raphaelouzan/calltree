@@ -37,6 +37,7 @@ function onOpen() {
    
    var menu = SpreadsheetApp.getUi()
       .createMenu('* Call Tree Functions * ')
+      .addItem('Pull latest news', 'pullNews')
       .addItem('Verify Phone Numbers', 'lookupPhoneNumbers')
       .addItem('Update control panel', 'populateControlPanel')
       .addItem('Export sheet to JSON', 'exportJSON')
@@ -47,6 +48,8 @@ function onOpen() {
 
 function loadMembers() { 
   var peopleTable = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("People"); 
-  return getRowsData(peopleTable);
+  var people = getRowsData(peopleTable);
+      Logger.log(people);
+  return people;
 }
 
