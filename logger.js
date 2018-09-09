@@ -55,7 +55,7 @@ function populateControlPanel(people) {
   var birthdays = getBirthdayPeopleForDate(people, new Date().getDate(), new Date().getMonth());
   sheet.getRange(5, 1).setValue(birthdays[0].length);
   // Number of members
-  sheet.getRange(6, 1).setValue(Object.keys(people).length + 1);
+  sheet.getRange(6, 1).setValue(Object.keys(people).length);
   // Oldest and latest matches sent
   var matches = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Timetable");
   var lastSent = matches.getRange(6, 2, matches.getLastRow()).getValues();
