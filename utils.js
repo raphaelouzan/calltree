@@ -71,15 +71,6 @@ function getRowsData(sheet, range, columnHeadersRowIndex) {
   return getObjects(range.getValues(), headers);
 }
 
-// Assumes header starts at (1,1) and data at (2,1)
-function getRowsData(sheet) { 
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("People"); 
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  var data = sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn()).getValues();
-  return getObjects(data, headers);
-}
-
-
 // Returns an Array of normalized Strings.
 // Arguments:
 //   - headers: Array of Strings to normalize
