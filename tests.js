@@ -1,3 +1,19 @@
+function runAutoTests() { 
+  // TODO Proper testing framework. Could throw an exception in the assert
+  // TODO Should pass a mock dataset to all tests
+  var people = loadMembers(); 
+  
+  var res = assert(testMatchTemplate(people), "TestMatchTemplate failed"); 
+  res &= assert(testLoadMembers(people), "TestLoadMembers failed");
+  res &= assert(testFindByNumber(people), "TestFindByNumber failed");
+  res &= assert(testGetSubmissionInfo(people), "TestGetSubmissionInfo failed"); 
+  res &= assert(testFindSubmissionColumn(), "testFindSubmissionColumn failed");
+  res &= assert(testBirthdayFinder(), "testBirthdayFinder failed");
+  
+  assert(res, "Automatic tests failed"); 
+  return res;
+}
+
 function getRandomPerson(people) { 
   var usernames = Object.keys(people);
   return people[usernames[rand(1, usernames.length - 1)]];
@@ -7,21 +23,32 @@ function rand(min, max) {
   return Math.floor(Math.random() * 100 % max) + min;
 }
 
-function runAutoTests() { 
-  var res = testMatchTemplate(); 
-  res = testGetSubmissionInfo(); 
-  res = testFindSubmissionColumn();
-  return res;
+function testLoadMembers(people) { 
+  var res = (Object.keys(people).length == 24); 
+  if (!res) throw "Invalid number of people"; 
+  
+  return true;
 }
 
-function testGetSubmissionInfo() { 
-  var people = loadMembers();
+function testFindByNumber(people) { 
+  if (!people) people = loadMembers(); 
+  var res = findByNumber(people, "+19178873590"); // raphael's number
+  if (res == null || res.firstname != "Raphael") throw "Test Error: " + res;
+  
+  res = findByNumber(people, "+19178873599"); // wrong number
+  if (res) throw "Test Error: should have returned null for wrong number"; 
+  
+  return true;
+}
+
+function testGetSubmissionInfo(people) { 
+  if (!people) people = loadMembers();
   
   var date = new Date(2018, 7, 31); 
   Logger.log("Date for test " + date); 
   var res = getSubmissionInfoForMonth(date);
   var success = (res.dayToSend == 31) && (res.matches.length == Object.keys(people).length) && res.quote != ""; 
-  if (!success) throw "Test Error : " + res;
+  if (!success) throw "Test Error : " + res.dayToSend + " " + res.matches.length + " " + Object.keys(people).length + " " + res.quote;
   
   date = new Date(2018, rand(0, 11), rand(0, 30));
   res = getSubmissionInfoForMonth(date);
@@ -33,7 +60,7 @@ function testGetSubmissionInfo() {
 
 function testFindSubmissionColumn() { 
   var date = new Date(2018, 7, 31); 
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Timetable");
   var rows = sheet.getRange(1, 1, sheet.getLastRow(), sheet.getLastColumn()).getValues();
   var res = findSubmissionColumn(date, rows); 
   var success = (res == 2);
@@ -42,8 +69,9 @@ function testFindSubmissionColumn() {
   return true;
 }
 
-function testMatchTemplate() { 
-  var people = loadMembers();
+function testMatchTemplate(people) { 
+  if (!people) people = loadMembers();
+  
   var tp = "Hello ${\"to.firstname\"} meet ${\"match.lastname\"}";
   var res = textFromTemplate(tp, {"to" : people["Raphael"], "match" : people["Athena"]}); 
   Logger.log(res); 
@@ -54,7 +82,21 @@ function testMatchTemplate() {
   Logger.log(res);
   if(res != "Hello Raphael World Sensei") throw "failed test";
   
-  return res;
+  return true;
+}
+
+function testBirthdayFinder(people) { 
+  if (!people) people = loadMembers(); 
+  
+  var birthdays = getBirthdayPeopleForDate(people, 9, 5); // month is 0 based
+  var res = (birthdays[0][0] == people["Raphael"]);
+  if (!res) throw "Couldn't find Raphael's birthday"; 
+  
+  birthdays = getBirthdayPeopleForDate(people, 6, 0); // Athena's bday
+  res = (birthdays[0][0] == people["Athena"]); 
+  if (!res) throw "Couldn't find Athena's birthday";
+  
+  return true; 
 }
 
 function testSendBirthday() { 
