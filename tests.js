@@ -1,6 +1,6 @@
 function runAutoTests() { 
   // TODO Proper testing framework. Could throw an exception in the assert
-  // TODO Should pass a mock dataset to all tests
+  // TODO Should pass a mock dataset to all tests (copy an object dump and JSON parse it create a dict out of it)
   var people = loadMembers(); 
   
   var res = assert(testMatchTemplate(people), "TestMatchTemplate failed"); 
@@ -38,6 +38,10 @@ function testLoadMembers(people) {
   
   var raphBirthday = new Date(people["Raphael"].birthday);
   if (raphBirthday.getMonth() != 5 || raphBirthday.getDate() != 9) throw "Invalid date for Raph's birthday";
+  
+  if (!people["Raphael"].enrolled) throw "Raphael should be enrolled";
+  
+  if (people["Raphael"].email != "raphael.ouzan@gmail.com") throw "Wrong email for raphael";
   
   return true;
 }
