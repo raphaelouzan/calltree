@@ -1,20 +1,17 @@
 function loadMembers() { 
-  var people = getRowsData("People");
-  return people;
+  var rows = getRowsData("People");
+  return getObjects(rows.data, rows.headers);
 }
 
-function updatePeople(people) { 
-  setRowsData("People", people); 
+function updatePeople(people) {
+  var table = objectToTable(people);   
+  setRowsData("People", table); 
 }
 
-function setRowsData(sheetName, people) { 
-  // TODO should cache the headers
-  // TODO should maybe cache the range? 
-  
+function setRowsData(sheetName, table) { 
+  // TODO should cache the range? 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName); 
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var range = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn());
-  var table = objectToTable(people, headers); 
   
   // Update the table with a 10 second lock
   var lock = LockService.getPublicLock(); 
@@ -31,7 +28,7 @@ function getRowsData(sheetName) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName); 
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   var data = sheet.getRange(2, 1, sheet.getLastRow(), sheet.getLastColumn()).getValues();
-  return getObjects(data, headers);
+  return {"data": data, "headers" : headers};
 }
 
 function findByNumber(people, number) { 

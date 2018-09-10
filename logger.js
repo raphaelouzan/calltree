@@ -1,6 +1,7 @@
 function logError(errorMsg) { 
   logRow(new Date(), "", "", "", "", errorMsg);
   console.error("Error : " + errorMsg);
+  Logger.log(errorMsg);
 }
 
 function logSms(from, to, body) { 
@@ -21,8 +22,7 @@ function logAboutToSubmitMatches() {
 }
 
 function logRow(timestamp, from, to, body, sent, msg) { 
-  var ACTIVITY_SHEET = 2;
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[ACTIVITY_SHEET];
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Activity");
   var lastRow = sheet.getLastRow() + 1;
   sheet.getRange(lastRow, 1, 1, 7).setValues([[timestamp, from, to, body, sent, msg, isDebugOn()]]);
 }

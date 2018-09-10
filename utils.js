@@ -38,39 +38,39 @@ function createArray(length) {
     return arr;
 }
 
-// @return A dict where the key is the first datafield of each row, 
-//         and the value is a dict where the key is form keys param for the values of each row
-// @note   All the data values are converted to String
-// @param data: JavaScript 2d array
-// @param keys: Array of Strings that define the property names for the objects to create
+/* @return A dict where the key is the first datafield of each row, 
+ *         and the value is a dict where the key is from keys param for the values of each row
+ *         such as <key> < <key, value>, <key, value>, etc. >, < <key, value>, etc. >, etc.
+ * @param  data: JavaScript 2d array
+ * @param  keys: Array of Strings that define the property names for the objects to create
+ */
 function getObjects(data, keys) {
+  // master dict
   var objects = {};
   for (var i = 0; i < data.length; ++i) {
     var object = {};
-    var hasData = false;
     for (var j = 0; j < data[i].length; ++j) {
-      // TODO consider not converting data to string
       var cellData = data[i][j];
-      if (isCellEmpty_(cellData)) {
-        continue;
-      }
       object[keys[j]] = cellData;
-      hasData = true;
     }
-    if (hasData) {
-      objects[object[Object.keys(object)[0]]] = object;
+    // If the object has a key (first field), add it to the master dict 
+    if (object[keys[0]]) {
+      objects[object[keys[0]]] = object;
     }
   }
   return objects;
 }
 
-function objectToTable(object, fields) { 
+/*
+ * @param   object dict of dicts, assumes <key> < <key, value>, <key, value>, etc. >, < <key, value>, etc. >, etc. 
+ * @returns flattens a dict of dicts into a 2d array
+ * @note    expects every dict of the parent to have all fields
+ */ 
+function objectToTable(object) { 
  
   var keys = Object.keys(object); 
-  Logger.log("keys : " + keys);
-  // To retrieve the fields, we need a row with all fields, so best to look up the fields
-  // as params rather than dynamically on an arbitrary row
-  Logger.log( "fields : " + fields);
+  var fields = Object.keys(object[keys[0]]);
+  
   var table = createArray(keys.length, fields.length); 
   for (var i = 0; i < keys.length; i++) { 
     for (var x = 0; x < fields.length; x++) { 

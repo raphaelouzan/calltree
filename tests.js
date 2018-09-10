@@ -24,6 +24,12 @@ function rand(min, max) {
   return Math.floor(Math.random() * 100 % max) + min;
 }
 
+function testClass() { 
+  var people = new People(); 
+  Logger.log(people.get()); 
+  
+}
+
 function testLoadMembers(people) { 
   if (!people) people = loadMembers();
   
