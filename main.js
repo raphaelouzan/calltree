@@ -39,6 +39,9 @@ function runEveryDay() {
   console.timeEnd("runEveryday");  
 }
 
+/* 
+ * Add special functions to the menu, refreshes control panel and SMS inbox
+ */ 
 function onOpen() {
    
    var menu = SpreadsheetApp.getUi()
@@ -51,4 +54,8 @@ function onOpen() {
       .addSeparator()
       .addItem('* Run CallTree batch * (' + (isDebugOn() ? 'DEBUG' : 'PRODUCTION') + ')', 'runEveryDay')
       .addToUi(); 
+  
+  var people = loadMembers();
+  updateControlPanel(people); 
+  updateInbox(people);
 };
