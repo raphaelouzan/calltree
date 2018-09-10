@@ -9,6 +9,7 @@ function runAutoTests() {
   res &= assert(testGetSubmissionInfo(people), "TestGetSubmissionInfo failed"); 
   res &= assert(testFindSubmissionColumn(), "testFindSubmissionColumn failed");
   res &= assert(testBirthdayFinder(), "testBirthdayFinder failed");
+  res &= assert(testEditMembers(people), "testEditMembers failed");
   
   assert(res, "Automatic tests failed"); 
   return res;
@@ -24,10 +25,39 @@ function rand(min, max) {
 }
 
 function testLoadMembers(people) { 
+  if (!people) people = loadMembers();
+  
   var res = (Object.keys(people).length == 24); 
   if (!res) throw "Invalid number of people"; 
   
+  var raphBirthday = new Date(people["Raphael"].birthday);
+  if (raphBirthday.getMonth() != 5 || raphBirthday.getDate() != 9) throw "Invalid date for Raph's birthday";
+  
   return true;
+}
+
+function testEditMembers(people) { 
+  if (!people) people = loadMembers(); 
+  
+  var person = getRandomPerson(people);
+  var isEnrolled = person.enrolled;
+  
+  // invest checkbox & save
+  person.enrolled = (isEnrolled == "true") ? "false" : "true"; 
+  
+  Logger.log("Updated person " + person.firstname + " enrolled? " + person.enrolled);
+  Logger.log(people);
+  updatePeople(people);
+  
+  // Check that the update worked
+  updatedPeople = loadMembers(); 
+  if (updatedPeople[person.username].enrolled == isEnrolled) throw "edit members failed"; 
+  
+  // revert changes
+  updatedPeople[person.username].enrolled = isEnrolled;
+  updatePeople(updatedPeople);
+  
+  return true; 
 }
 
 function testFindByNumber(people) { 
@@ -88,7 +118,7 @@ function testMatchTemplate(people) {
 function testBirthdayFinder(people) { 
   if (!people) people = loadMembers(); 
   
-  var birthdays = getBirthdayPeopleForDate(people, 9, 5); // month is 0 based
+  var birthdays = getBirthdayPeopleForDate(people, 9, 5); // Raphael's birthday (month 0 based)
   var res = (birthdays[0][0] == people["Raphael"]);
   if (!res) throw "Couldn't find Raphael's birthday"; 
   

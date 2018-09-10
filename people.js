@@ -3,7 +3,30 @@ function loadMembers() {
   return people;
 }
 
-// Assumes People header starts at (1,1) and data at (2,1)
+function updatePeople(people) { 
+  setRowsData("People", people); 
+}
+
+function setRowsData(sheetName, people) { 
+  // TODO should cache the headers
+  // TODO should maybe cache the range? 
+  
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName); 
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var range = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn());
+  var table = objectToTable(people, headers); 
+  
+  // Update the table with a 10 second lock
+  var lock = LockService.getPublicLock(); 
+  if (lock.tryLock(10000))  {
+    range.setValues(table);
+  } else {
+    logError("Couldn't acquire lock to update people table");
+  }
+  
+}
+
+// Assumes header starts at (1,1) and data at (2,1)
 function getRowsData(sheetName) { 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName); 
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];

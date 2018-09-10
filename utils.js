@@ -25,6 +25,19 @@ function textFromTemplate(template, data) {
   return template;
 }
 
+// Creates multi dimension arrays
+function createArray(length) {
+    var arr = new Array(length || 0),
+        i = length;
+
+    if (arguments.length > 1) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        while(i--) arr[length-1 - i] = createArray.apply(this, args);
+    }
+
+    return arr;
+}
+
 // @return A dict where the key is the first datafield of each row, 
 //         and the value is a dict where the key is form keys param for the values of each row
 // @note   All the data values are converted to String
@@ -36,7 +49,8 @@ function getObjects(data, keys) {
     var object = {};
     var hasData = false;
     for (var j = 0; j < data[i].length; ++j) {
-      var cellData = String(data[i][j]);
+      // TODO consider not converting data to string
+      var cellData = data[i][j];
       if (isCellEmpty_(cellData)) {
         continue;
       }
@@ -50,6 +64,27 @@ function getObjects(data, keys) {
   return objects;
 }
 
+function objectToTable(object, fields) { 
+ 
+  var keys = Object.keys(object); 
+  Logger.log("keys : " + keys);
+  // To retrieve the fields, we need a row with all fields, so best to look up the fields
+  // as params rather than dynamically on an arbitrary row
+  Logger.log( "fields : " + fields);
+  var table = createArray(keys.length, fields.length); 
+  for (var i = 0; i < keys.length; i++) { 
+    for (var x = 0; x < fields.length; x++) { 
+      var value = object[keys[i]][fields[x]];
+      if (value && value != "") {
+        table[i][x] = value;
+      } else { 
+        table[i][x] = "";
+      }
+    }
+  }
+  
+  return table;
+}
 
 
 // Based on: https://script.google.com/d/1Fvd-OtdzYzd4edFKsD3RPcjQ6YV3hmoJxJuBNK1g_qUtI_MuEXeyIps2/edit?usp=sharing
