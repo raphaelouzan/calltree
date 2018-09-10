@@ -1,7 +1,9 @@
 function runEveryDay() { 
+  // TODO Send welcome message if user getting a message for the first time
   // TODO Add test for getRowsData, sendMatches
   // TODO Test birthday message bulk sending (SMS messages to multiple people)
   // TODO Add monthly news digest 
+  // TODO Should check on SMS submission status with Twilio Webhook
 
   Logger.log("Running CallTree daily job. MODE: Debug? " + isDebugOn()); 
   
@@ -25,12 +27,16 @@ function runEveryDay() {
     sendMatchesIfScheduledForToday(people);
     console.timeEnd("sendMatchesIfScheduledForToday");
     
+    // Update SMS inbox
+    console.time("updateInbox"); 
+    updateInbox(people);
+    console.timeEnd("updateInbox");
+    
   } catch(e) { 
     Logger.log("runEveryday error " + e);
     console.error('CallTree::runEveryDay() yieled an error ' + e);
   }
   console.timeEnd("runEveryday");  
-  
 }
 
 function onOpen() {
@@ -38,6 +44,7 @@ function onOpen() {
    var menu = SpreadsheetApp.getUi()
       .createMenu('* Call Tree Functions * ')
       .addItem('Pull latest news', 'pullNews')
+      .addItem('Update incoming text inbox', 'updateInbox')
       .addItem('Verify Phone Numbers', 'lookupPhoneNumbers')
       .addItem('Update control panel', 'populateControlPanel')
       .addItem('Export sheet to JSON', 'exportJSON')
@@ -45,11 +52,3 @@ function onOpen() {
       .addItem('* Run CallTree batch * (' + (isDebugOn() ? 'DEBUG' : 'PRODUCTION') + ')', 'runEveryDay')
       .addToUi(); 
 };
-
-function loadMembers() { 
-  var peopleTable = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("People"); 
-  var people = getRowsData(peopleTable);
-      Logger.log(people);
-  return people;
-}
-
