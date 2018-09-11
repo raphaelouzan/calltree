@@ -1,17 +1,9 @@
 function runEveryDay() { 
-  // TODO Send welcome message if user getting a message for the first time
-  // TODO Add test for getRowsData, sendMatches
-  // TODO Test birthday message bulk sending (SMS messages to multiple people)
-  // TODO Add monthly news digest 
-  // TODO Should check on SMS submission status with Twilio Webhook
-
   Logger.log("Running CallTree daily job. MODE: Debug? " + isDebugOn()); 
   
   console.time("runEveryday");
   try { 
-    console.time("loadMembers");
     var people = loadMembers();
-    console.timeEnd("loadMembers");
     
     console.time("populateControlPanel");
     populateControlPanel(people);
@@ -35,12 +27,13 @@ function runEveryDay() {
   } catch(e) { 
     Logger.log("runEveryday error " + e);
     console.error('CallTree::runEveryDay() yieled an error ' + e);
+  } finally {
+    console.timeEnd("runEveryday");  
   }
-  console.timeEnd("runEveryday");  
 }
 
 /* 
- * Add special functions to the menu, refreshes control panel and SMS inbox
+ * Add custom app menu, refreshes control panel and SMS inbox
  */ 
 function onOpen() {
    

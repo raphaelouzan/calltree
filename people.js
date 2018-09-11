@@ -1,11 +1,20 @@
 function loadMembers() { 
+  console.time("loadMembers");
   var rows = getRowsData("People");
-  return getObjects(rows.data, rows.headers);
+  var people = getObjects(rows.data, rows.headers);
+  console.timeEnd("loadMembers");
+  return people; 
 }
 
+/* 
+ * Updates the people table
+ * @todo could accept field names to update. the setRowsData function would get the range only for these fields
+ */
 function updatePeople(people) {
-  var table = objectToTable(people);   
-  setRowsData("People", table); 
+  console.time("updatePeople");
+  var table = objectToTable(people);  
+  setRowsData("People", table);
+  console.timeEnd("updatePeople");
 }
 
 function setRowsData(sheetName, table) { 
