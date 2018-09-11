@@ -56,7 +56,7 @@ function getSubmissionInfoForMonth(date) {
   var TO_CELL   = 1; 
   var LAST_TEXT_CELL = 2;
 
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[MATCH_SHEET];
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Timetable");
   var rows = sheet.getRange(1, 1, sheet.getLastRow(), sheet.getLastColumn()).getValues();
  
   var monthCol = findSubmissionColumn(date, rows); 
@@ -72,7 +72,11 @@ function getSubmissionInfoForMonth(date) {
   var foundMatches = [];
   for (var i = MATCH_ROW - 1; i < rows.length; i++) { 
   	var row = rows[i]; 
-  	foundMatches.push([row[TO_CELL - 1], row[monthCol], sheet.getRange(i + 1, monthCol + 1), sheet.getRange(i + 1, LAST_TEXT_CELL)]);
+    foundMatches.push({
+      "to": row[TO_CELL - 1],
+      "match": row[monthCol],
+      "matchCell": sheet.getRange(i + 1, monthCol + 1)
+    });    
   }
 
   var res = { 
@@ -85,45 +89,67 @@ function getSubmissionInfoForMonth(date) {
 }
 
 /*
+ * Send matches and welcome message if the user was never enrolled. 
  * @param people DB
  * @param matches key pairs [recipient username, match username]
  * @param quote
- *
  */
 function sendMatches(people, matches, quote) { 
  
-  Logger.log("About to send matches " + matches);
+  Logger.log("About to send matches - (" + matches.length + " matches)" );
   
   for (var i in matches) { 
-    var to = matches[i][0];
-    var match = matches[i][1];
-    var matchCell = matches[i][2];
-    var lastTextCell = matches[i][3];
-    
-    Logger.log("Recipient: " + to + " match : " + match);
+    var to = matches[i].to;
+    var match = matches[i].match;
+    var matchCell = matches[i].matchCell;   
     
     if (assert(people[to] != undefined, "Username " + to + " could not be found in the people table") 
         && assert(people[match] != undefined, "Username " + match + " could not be found in the people table")) {
       
+      // Send welcome message to people not marked as enrolled
+      if (!people[to].enrolled) {
+          if (sendWelcomeText(people[to])) { 
+             people[to].enrolled = true;        
+          }
+      }
+          
       if (sendMatchText(people[to], people[match], quote)) {
-        //Mark timestamp for match cell and last text column
-        var timestamp = isDebugOn() ? "DEBUG :" + new Date().toString() : new Date();
-        matchCell.setNote(timestamp);
-        lastTextCell.setValue(timestamp);       
+        //Mark timestamp for match cell and last text column in people table
+        if (!isDebugOn()) matchCell.setNote(new Date());    
+        var timestamp = isDebugOn() ? ("DEBUG :" + new Date().toString()) : new Date();
+        people[to].lastmatchsent = timestamp; 
       }
     }    
-  }  
+  }
+
+  // Update people database (we could optimize by updating only enrolled
+  updatePeople(people);  
 }
 
 /*
  * @param to     the recipient, as an object of the person table
  * @param match  the match, as an object of the person table
  * @param quote  string of the quote
+ * @returns true if succesful otherwise null 
  */
 function sendMatchText(to, match, quote) { 
-  Logger.log("Sending to " + to.firstname + " match with " + match.firstname);
+  Logger.log("Sending match to " + to.firstname + " with " + match.firstname);
   var msg = textFromTemplate(getMatchTemplate(), {"to" : to, "person" : match, "quote": quote});
-  return assert(sendSms(to.number, msg), "Message could not be sent");
+  if (msg) { 
+    return assert(sendSms(to.number, msg), "Match message could not be sent");
+  } else { 
+    return null;
+  }
+}
+
+function sendWelcomeText(to) { 
+  Logger.log("Sending welcome text to " + to.firstname); 
+  var msg = textFromTemplate(getWelcomeTemplate(), {"to": to});
+  if (msg) { 
+    return assert(sendSms(to.number, msg), "Welcome message could not be sent");
+  } else { 
+    return null;
+  }
 }
 
 /// Match generation
